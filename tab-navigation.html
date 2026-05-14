@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tab Navigation</title>
+  <style>
+    /* ─── Reset & base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, sans-serif;
+      background: #06141b;
+      color: #ccd0cf;
+      min-height: 200vh; /* tall enough to test scrolling */
+    }
+
+    /* ─── Sticky tab bar ────────────────────────────────────────── */
+    .tabs_cls-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 1rem;
+      background: rgba(6, 20, 27, 0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Individual tab link */
+    .tabs_cls {
+      display: inline-block;
+      padding: 0.4rem 1.1rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: rgba(155, 168, 171, 0.9);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-decoration: none;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    }
+
+    .tabs_cls:hover {
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Active state */
+    .tabs_cls.is-active {
+      background: #253745;
+      color: #ccd0cf;
+      border-color: rgba(74, 92, 106, 0.4);
+      box-shadow: 0 0 14px rgba(155, 168, 171, 0.18);
+    }
+
+    /* ─── Content wrapper ───────────────────────────────────────── */
+    .content {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 6rem;
+    }
+
+    /* ─── Individual tab sections ───────────────────────────────── */
+    .tab_section {
+      /*
+       * Hidden by default.
+       * JS reveals the first section immediately; subsequent ones are
+       * revealed either on tab-click or when IntersectionObserver fires.
+       */
+      display: none;
+      opacity: 0;
+      transform: translateX(60px);
+      /* Transition used when JS adds the .is-visible class */
+      transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      margin-bottom: 3rem;
+      border-radius: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 2.5rem;
+      scroll-margin-top: 80px; /* clears sticky bar on anchor scroll */
+    }
+
+    /* Fully visible state — added by JS */
+    .tab_section.is-visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .tab_section h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .tab_section p {
+      line-height: 1.7;
+      color: #9ba8ab;
+      font-size: 0.95rem;
+    }
+
+    .tab_section .metric {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .tab_section .metric-item strong {
+      display: block;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1;
+    }
+
+    .tab_section .metric-item span {
+      font-size: 0.8rem;
+      color: #9ba8ab;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── Tab bar ──────────────────────────────────────────────── -->
+  <nav class="tabs_cls-bar" aria-label="Solution tabs">
+    <a class="tabs_cls" href="#aurora">AURORA</a>
+    <a class="tabs_cls" href="#dovient">DOVIENT</a>
+    <a class="tabs_cls" href="#luma">LUMA</a>
+    <a class="tabs_cls" href="#aries">ARIES</a>
+    <a class="tabs_cls" href="#nova">NOVA</a>
+    <a class="tabs_cls" href="#partnerships">PARTNERSHIPS</a>
+  </nav>
+
+  <!-- ─── Sections ─────────────────────────────────────────────── -->
+  <div class="content">
+
+    <section id="aurora" class="tab_section">
+      <h2>Aurora</h2>
+      <p>Decision Intelligence for Retail and CPG. AURORA orchestrates the systems a retailer already runs and connects them with external market signals so planning teams see what decisions will look like before they commit.</p>
+      <div class="metric">
+        <div class="metric-item"><strong>1–3pt</strong><span>gross margin improvement</span></div>
+        <div class="metric-item"><strong>8–15%</strong><span>cost-to-serve savings</span></div>
+        <div class="metric-item"><strong>20–35%</strong><span>split shipment reduction</span></div>
+      </div>
+    </section>
+
+    <section id="dovient" class="tab_section">
+      <h2>Dovient</h2>
+      <p>Operational Intelligence for Manufacturing. Dovient connects the systems a manufacturer already runs and turns fragmented operational data into foresight for operations and procurement teams.</p>
+      <div class="metric">
+        <div class="metric-item"><strong>$350K</strong><span>annualised savings</span></div>
+        <div class="metric-item"><strong>45%</strong><span>reduction in MTTR</span></div>
+        <div class="metric-item"><strong>28-day</strong><span>go-live</span></div>
+      </div>
+    </section>
+
+    <section id="luma" class="tab_section">
+      <h2>Luma</h2>
+      <p>Incident Resolution and Operational Intelligence for IT and Operations Teams. AI-powered incident correlation replaces scattered updates across Slack, Teams, and email.</p>
+      <div class="metric">
+        <div class="metric-item"><strong>80%</strong><span>sync-time reduction</span></div>
+        <div class="metric-item"><strong>60%</strong><span>faster MTTR</span></div>
+        <div class="metric-item"><strong>100%</strong><span>auditable timeline</span></div>
+      </div>
+    </section>
+
+    <section id="aries" class="tab_section">
+      <h2>Aries</h2>
+      <p>API Testing and Validation for Engineering Teams. Scriptless, AI-powered validation replaces brittle manual test scripts across hundreds to thousands of API endpoints.</p>
+      <div class="metric">
+        <div class="metric-item"><strong>40–60%</strong><span>test time saved</span></div>
+        <div class="metric-item"><strong>25–35%</strong><span>faster defect resolution</span></div>
+        <div class="metric-item"><strong>70%</strong><span>less test maintenance</span></div>
+      </div>
+    </section>
+
+    <section id="nova" class="tab_section">
+      <h2>Nova</h2>
+      <p>Decision Intelligence for Finance Teams. Nova takes ERP, sales, and HCM data and gives finance teams scenario modelling and stress-testing capabilities they currently build manually or do not have at all.</p>
+    </section>
+
+    <section id="partnerships" class="tab_section">
+      <h2>Partnerships</h2>
+      <p>AZTRA also delivers custom development and integration work. The same engineering team that builds the orchestration layer for AURORA and Dovient deployments works directly with clients on bespoke system challenges.</p>
+    </section>
+
+  </div>
+
+  <script>
+    /**
+     * Tab Navigation — vanilla JS
+     *
+     * Behaviour:
+     *  • All .tab_section elements are hidden on load.
+     *  • The section whose id matches the URL hash (or the first one) is
+     *    shown immediately without animation on load.
+     *  • Clicking a .tabs_cls link: hides the current section, shows the
+     *    target section with a right→left slide-in animation, smooth-scrolls
+     *    to it, and marks the link active.
+     *  • IntersectionObserver: when a section scrolls into the viewport it
+     *    animates in and its tab link is highlighted.
+     */
+
+    (function () {
+      'use strict';
+
+      /* ── Gather elements ──────────────────────────────────────── */
+      const tabLinks   = Array.from(document.querySelectorAll('.tabs_cls'));
+      const sections   = Array.from(document.querySelectorAll('.tab_section'));
+
+      /* Map section id → link element for O(1) lookup */
+      const linkMap = {};
+      tabLinks.forEach((link) => {
+        const id = link.getAttribute('href').replace(/^#/, '');
+        linkMap[id] = link;
+      });
+
+      /* ── Helpers ──────────────────────────────────────────────── */
+
+      /**
+       * Reset a section back to the hidden, off-screen-right state.
+       * Removes `display:block` first so the transition doesn't fire
+       * when we later re-show it (avoids a flash on re-entry).
+       */
+      function hideSection(section) {
+        section.style.display  = 'none';
+        section.classList.remove('is-visible');
+        /* Reset transform/opacity so the animation replays next time */
+        section.style.opacity   = '0';
+        section.style.transform = 'translateX(60px)';
+      }
+
+      /** Deactivate every tab link. */
+      function clearActiveLinks() {
+        tabLinks.forEach((l) => l.classList.remove('is-active'));
+      }
+
+      /**
+       * Show a section and trigger the slide-in animation.
+       * @param {HTMLElement} section
+       * @param {boolean}     [instant=false]  Skip the CSS transition (page load).
+       */
+      function showSection(section, instant) {
+        section.style.display = 'block';
+
+        if (instant) {
+          /* Page load — snap into place, no transition */
+          section.style.transition = 'none';
+          section.style.opacity    = '1';
+          section.style.transform  = 'translateX(0)';
+          /* Re-enable transitions for future interactions */
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              section.style.transition = '';
+              section.classList.add('is-visible');
+            });
+          });
+        } else {
+          /* Animated entry — ensure the browser has painted display:block
+           * before we add the class that starts the CSS transition. */
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              section.classList.add('is-visible');
+            });
+          });
+        }
+      }
+
+      /* ── Page-load initial state ──────────────────────────────── */
+
+      /* Hide all sections first */
+      sections.forEach((s) => hideSection(s));
+
+      /* Determine which section to open first */
+      const hashId  = window.location.hash.replace(/^#/, '');
+      const initial = sections.find((s) => s.id === hashId) || sections[0];
+
+      if (initial) {
+        showSection(initial, /* instant */ true);
+        if (linkMap[initial.id]) {
+          linkMap[initial.id].classList.add('is-active');
+        }
+      }
+
+      /* ── Tab-click handler ────────────────────────────────────── */
+
+      tabLinks.forEach((link) => {
+        link.addEventListener('click', function (event) {
+          event.preventDefault(); // stop browser anchor jump
+
+          const targetId = this.getAttribute('href').replace(/^#/, '');
+          const target   = document.getElementById(targetId);
+          if (!target) return;
+
+          /* Hide every visible section */
+          sections.forEach((s) => {
+            if (s !== target) hideSection(s);
+          });
+
+          /* Activate the clicked link */
+          clearActiveLinks();
+          this.classList.add('is-active');
+
+          /* Show target with animation */
+          showSection(target);
+
+          /* Smooth-scroll to the section (respects scroll-margin-top) */
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+
+      /* ── IntersectionObserver — scroll-triggered reveal ───────── */
+
+      /**
+       * We observe all sections. When one enters the viewport:
+       *  1. Animate it in (right→left).
+       *  2. Mark the corresponding tab link active.
+       *
+       * We do NOT hide other sections here because in a long-scroll
+       * layout multiple sections can be visible simultaneously.
+       * If you want strict single-section mode, call hideSection on
+       * the previous section inside the callback.
+       */
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+
+            const section = entry.target;
+
+            /* Only animate if not already visible */
+            if (!section.classList.contains('is-visible')) {
+              section.style.display = 'block';
+              requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                  section.classList.add('is-visible');
+                });
+              });
+            }
+
+            /* Sync the active tab link with whichever section is most visible */
+            clearActiveLinks();
+            if (linkMap[section.id]) {
+              linkMap[section.id].classList.add('is-active');
+            }
+          });
+        },
+        {
+          /* Fire when at least 15% of the section is inside the viewport */
+          threshold: 0.15,
+          /* Account for the sticky tab bar height */
+          rootMargin: '-72px 0px 0px 0px',
+        }
+      );
+
+      sections.forEach((s) => observer.observe(s));
+
+    })();
+  </script>
+
+</body>
+</html>

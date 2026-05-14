@@ -1,0 +1,14 @@
+<!-- Interim NOVA wordmark; replace file when final logo is delivered. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 64" fill="none" aria-labelledby="novaTitle">
+  <title id="novaTitle">NOVA</title>
+  <text
+    x="0"
+    y="48"
+    fill="#F5F7FA"
+    font-family="system-ui, -apple-system, 'Segoe UI', sans-serif"
+    font-size="44"
+    font-weight="700"
+    letter-spacing="0.28em"
+  >NOVA</text>
+  <rect x="0" y="54" width="132" height="4" rx="1" fill="#E07A5F" opacity="0.95" />
+</svg>
